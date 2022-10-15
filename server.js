@@ -27,7 +27,17 @@ socketIO.on("connection", (socket) => {
   socket.on("message", (data) => {
     socketIO.emit("messageResponse", data);
   });
-  
+
+  //while typing send message
+  socket.on("typing", (data) => {
+    socket.emit("typingResponse", data)
+  });
+
+  socket.on("newUser", (data) => {
+    let users = [];
+    users.push(data);
+    socketIO.emit("newUserResponse", users);
+  });
 });
 
 app.get("/", (req, res) => {
