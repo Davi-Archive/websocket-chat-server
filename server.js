@@ -1,26 +1,33 @@
-const path = require("path");
-const http = require("http");
 const express = require("express");
 const dotenv = require("dotenv");
-const socketio = require("socket.io");
-
 dotenv.config();
+
+// App accept requests, but http stream data in websockets ( no need to reload )
 const app = express();
-const server = http.createServer(app);
-const io = socketio(server);
+const http = require("http").Server(app);
+const cors = require("cors");
+app.use(cors());
+const socketIO = require("socket.io")(http, {
+  cors: {
+    origin: "http://localhost:3000/",
+    methods: ["GET", "POST"],
+  },
+});
 
-//Set static folder
-app.use(express.static(path.join(__dirname, "public")));
+// connect with socket.io to get data
+socketIO.on("connection", (socket) => {
+  console.log(`⚡: ${socket.id} user just connected!`);
+  socket.on("disconnect", () => {
+    console.log("🔥: A user disconnected");
+  });
+});
 
-//Run when client connects
-io.on("connection", (socket) => {
-  console.log("New WS connection");
-
-  socket.emit("message", "Bem vindo ao Chat");
+app.get("/", (req, res) => {
+  res.status(200).json({ message: "Chat server, ONLINE" });
 });
 
 const PORT = process.env.PORT || 3001;
 
-server.listen(PORT, () => {
+http.listen(PORT, () => {
   console.log(`Server is listening on port: ${PORT}`);
 });
