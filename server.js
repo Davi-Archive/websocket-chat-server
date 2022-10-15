@@ -6,11 +6,12 @@ dotenv.config();
 const app = express();
 const http = require("http").Server(app);
 const cors = require("cors");
+const Server = require('socket.io')
 app.use(cors());
-const socketIO = require("socket.io")(http, {
+
+const socketIO = Server(http, {
   cors: {
-    origin: "http://localhost:3000/",
-    methods: ["GET", "POST"],
+    origin: "*",
   },
 });
 
