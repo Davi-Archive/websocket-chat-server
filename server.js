@@ -6,7 +6,7 @@ dotenv.config();
 const app = express();
 const http = require("http").Server(app);
 const cors = require("cors");
-const Server = require('socket.io')
+const Server = require("socket.io");
 app.use(cors());
 
 const socketIO = Server(http, {
@@ -18,9 +18,16 @@ const socketIO = Server(http, {
 // connect with socket.io to get data
 socketIO.on("connection", (socket) => {
   console.log(`⚡: ${socket.id} user just connected!`);
+
   socket.on("disconnect", () => {
     console.log("🔥: A user disconnected");
   });
+
+  // message to all users on the server
+  socket.on("message", (data) => {
+    socketIO.emit("messageResponse", data);
+  });
+  
 });
 
 app.get("/", (req, res) => {
