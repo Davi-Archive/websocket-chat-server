@@ -41,7 +41,7 @@ socketIO.on("connection", (socket) => {
 });
 
 app.get("/", (req, res) => {
-  res.status(200).json({ message: "Chat server, ONLINE" });
+  res.status(200).json({ message: "Chat server, ONLINE using websockets" });
 });
 
 const PORT = process.env.PORT || 3001;
